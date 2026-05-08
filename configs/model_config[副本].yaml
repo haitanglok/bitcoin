@@ -1,0 +1,38 @@
+
+gcn:
+  hidden_dim: 128
+  num_layers: 2
+  dropout: 0.3
+gat:
+  hidden_dim: 64
+  num_heads: 8
+  num_layers: 2
+  dropout: 0.3
+training:
+  model_type: "gat"          # gcn | gat
+  learning_rate: 0.001
+  weight_decay: 0.0005
+  epochs: 300
+  patience: 20               # 早停耐心值
+  optimizer: "adam"
+  scheduler:
+    enabled: true
+    factor: 0.5
+    patience: 10
+    min_lr: 0.00001
+loss:
+  use_class_weight: true     # 自动计算类别权重解决样本不平衡
+checkpoint:
+  save_dir: "checkpoints"
+  monitor_metric: "f1"       # 保存最佳模型的依据指标
+evaluation:
+  threshold_percentile: 95   # 异常阈值分位数
+  pca_n_components: 2
+  umap_n_neighbors: 15
+  umap_min_dist: 0.1
+  decision_threshold: 0.65
+community:
+  algorithm: "louvain"       # louvain | label_propagation
+  resolution: 1.0
+  min_community_size: 3
+  risk_score_threshold: 0.7

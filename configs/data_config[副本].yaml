@@ -1,0 +1,35 @@
+# ================================================================
+# 数据配置文件 — 数据路径、预处理参数
+# ================================================================
+
+paths:
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  embeddings_dir: "data/embeddings"
+  elliptic_features: "elliptic_txs_features.csv"
+  elliptic_classes: "elliptic_txs_classes.csv"
+  elliptic_edgelist: "elliptic_txs_edgelist.csv"
+  processed_nodes: "processed_nodes.csv"
+  processed_edges: "processed_edges.csv"
+
+preprocessing:
+  label_mapping:
+    "1": 1      # illicit -> 洗钱
+    "2": 0      # licit   -> 正常
+  filter_unknown: true
+  scaler: "standard"        # standard | minmax | robust
+  missing_value_strategy: "median"
+  split:
+    train_ratio: 0.6
+    val_ratio:   0.2
+    test_ratio:  0.2
+    random_seed: 42
+    stratified_split: true
+
+feature_engineering:
+  num_local_features: 94
+  num_aggregate_features: 72
+  use_aggregate_features: true
+  feature_selection: false
+  variance_threshold: 0.005
+  correlation_threshold: 0.95

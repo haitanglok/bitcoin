@@ -1,0 +1,79 @@
+# configs/model_config.yaml
+# 冲顶版：目标 Recall≥0.90, F1≥0.90
+
+training:
+  model_type:    "ensemble"   # ✅ 新增集成模式
+  max_epochs:    400
+  epochs:        400
+  learning_rate: 0.0005
+  weight_decay:  0.00003
+
+  scheduler:
+    enabled:  true
+    factor:   0.3
+    patience: 80
+    min_lr:   0.00000005
+
+  early_stopping:
+    enabled:   true
+    patience:  80
+    min_delta: 0.00003
+    monitor:   "val_f1_illicit"
+
+# ── GraphSAGE 超参数 ──────────────────────────────────────────
+sage:
+  hidden_dim:      128
+  num_layers:      3          # 加深到5层，捕获更远邻居
+  dropout:         0.3       # 极低dropout
+  aggr:            "max"
+  use_jumping:     true
+  use_dropedge:    true
+  dropedge_rate:   0.15
+
+# ── GAT 超参数（集成用）──────────────────────────────────────
+gat:
+  hidden_dim:      64
+  num_layers:      3
+  num_heads:       4
+  dropout:         0.3
+
+# ── GCN 超参数 ────────────────────────────────────────────────
+gcn:
+  hidden_dim:      256
+  num_layers:      4
+  dropout:         0.05
+  use_jumping:     true
+  use_dropedge:    true
+  dropedge_rate:   0.03
+
+# ── 损失函数 ──────────────────────────────────────────────────
+loss:
+  use_focal_loss:            true
+  focal_gamma:               0.5  # 极强聚焦
+  use_class_weight:          true
+  illicit_weight_multiplier: 1.0  # 极大权重
+  label_smoothing:           0.1
+
+# ── 阈值搜索 ──────────────────────────────────────────────────
+threshold:
+  search_start:   0.01
+  search_end:     0.99
+  search_step:    0.002
+  recall_floor:   0.75        # 强制 Recall≥0.88
+  f1_weight:      0.5
+  recall_weight:  0.7         # 极度偏向Recall
+
+# ── 图传播后处理 ──────────────────────────────────────────────
+post_process:
+  use_label_propagation: true  # ✅ 标签传播平滑
+  propagation_alpha:     0.5   # 传播强度
+  propagation_steps:     3     # 传播步数
+
+# ── 检查点 ────────────────────────────────────────────────────
+checkpoint:
+  save_dir:       "checkpoints"
+  save_best_only: true
+
+evaluation:
+  pca_n_components:     2
+  threshold_percentile: 95
